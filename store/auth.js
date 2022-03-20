@@ -5,7 +5,12 @@ export const state = () => ({
 })
 
 export const mutations = {
-  setAuthUser (state, user) {
+  setAuthUser (state, {
+    accessToken,
+    refreshToken,
+    userId: TUserId
+  }) {
+
     appLocalStorage.setAuthUserId(user.id)
     state.authUser = user
   },

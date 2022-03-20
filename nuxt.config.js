@@ -44,7 +44,7 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    withCredentials: true,
+    // withCredentials: true,
     host: 'localhost',
     port: 5000
   },
