@@ -65,10 +65,7 @@ export default {
     ...mapActions('auth', ['getAuthUser'])
   },
   async created () {
-    if(!this.isAuth){
-      await this.getAuthUser()
-    }
-
+    if (!this.isAuth) await this.getAuthUser()
   }
 }
 </script>

@@ -60,6 +60,7 @@ export const actions = {
   },
   async logout ({ commit }) {
     try {
+      await this.$axios.$post('/auth/logout',{ withCredentials: true })
       commit('removeAccessToken')
       commit('removeRefreshToken')
       commit('removeAuthUserId')
