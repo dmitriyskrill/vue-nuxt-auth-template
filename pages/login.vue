@@ -47,7 +47,7 @@ import { isEmail, isNotEmpty } from '~/utils/appValidator'
 import { mapActions } from 'vuex'
 
 export default {
-  name: 'login',
+  name: 'pageLogin',
   data: () => ({
     valid: false,
     formData: {
@@ -63,11 +63,14 @@ export default {
     ]
   }),
   methods: {
-    ...mapActions('auth', ['login']),
+    ...mapActions('auth', ['login', 'logout']),
     async onSubmit () {
       await this.login(this.formData)
     }
   },
+  async created () {
+    await this.logout()
+  }
 }
 </script>
 

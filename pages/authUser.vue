@@ -9,6 +9,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'authUser',
+  layout: 'admin',
   computed: {
     ...mapGetters('auth', ['authUser']),
   }

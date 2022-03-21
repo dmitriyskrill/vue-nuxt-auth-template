@@ -1,4 +1,5 @@
 import appLocalStorage from '../utils/appLocalStorage'
+import { isClient } from '~/utils/appUtils'
 
 export default function ({ $axios, redirect, store }) {
   $axios.interceptors.request.use(request => {
@@ -6,30 +7,34 @@ export default function ({ $axios, redirect, store }) {
     if (
       !common.Authorization && common.Authorization !== 'Bearer undefined'
     ) {
-      const accessToken = appLocalStorage.getAccessToken()
+      const accessToken = store.getters['auth/accessToken']
       request.headers.common.Authorization = `Bearer ${accessToken}`
     }
     return request
   })
 
   $axios.onError(async error => {
-    // const originalRequest = error.config;
-    // if (error.response) {
-    //   if (error.response.status === 401 && error.config && !error.config._isRetry) {
-    //     originalRequest._isRetry = true;
-    //     try {
-    //       const response = await $axios.get(`/auth/updateAccessCookie`, {withCredentials: true})
-    //
-    //       return $axios.request(originalRequest);
-    //     } catch (e) {
-    //       store.dispatch('auth/logout')
-    //       redirect('/login')
-    //     }
-    //   }
-    //   if (error.response.status === 500) {
-    //     console.error('Server 500 error')
-    //   }
-    // } else {
-    // }
+    const originalRequest = error.config
+    if (!error.response) return
+    if (
+      error.response.status === 401 &&
+      originalRequest
+      && !originalRequest._isRetry
+      && originalRequest.url !== '/auth/updateAccessCookie'
+    ) {
+      originalRequest._isRetry = true
+      try {
+        const accessToken = await store.dispatch('auth/updateAccessCookie')
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`
+        return $axios.request(originalRequest)
+      } catch (e) {
+        console.log('$axios.onError auth/logout',e)
+        await store.dispatch('auth/logout')
+      }
+    }
+    if (error.response.status === 500) {
+      console.error('Server 500 error')
+    }
+
   })
 }
