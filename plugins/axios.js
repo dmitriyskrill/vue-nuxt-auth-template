@@ -13,24 +13,27 @@ export default function ({ $axios, store }) {
   $axios.onError(async error => {
     const originalRequest = error.config
     if (!error.response) return
-    if (
-      error.response.status === 401 &&
-      originalRequest
-      && !originalRequest._isRetry
-      && originalRequest.url !== '/auth/updateAccessToken'
-    ) {
-      originalRequest._isRetry = true
-      try {
-        const accessToken = await store.dispatch('auth/updateAccessToken')
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`
-        return $axios.request(originalRequest)
-      } catch (e) {
-        console.log('$axios.onError auth/logout',e)
-        await store.dispatch('auth/logout')
-      }
-    }
-    if (error.response.status === 500) {
-      console.error('Server 500 error')
+    switch (error.response.status) {
+      case 401:
+        if (!originalRequest
+          || originalRequest._isRetry
+          || originalRequest.url === '/auth/updateAccessToken'
+          || originalRequest.url === '/auth/logout'
+        ) break
+        originalRequest._isRetry = true
+        try {
+          const accessToken = await store.dispatch('auth/updateAccessToken')
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`
+          return $axios.request(originalRequest)
+        } catch (e) {
+          console.log('$axios.onError auth/logout', e)
+          await store.dispatch('auth/logout')
+        }
+
+        break
+      case 500:
+        console.error('Server 500 error')
+        break
     }
 
   })

@@ -44,7 +44,7 @@
 
 <script>
 import { isEmail, isNotEmpty } from '~/utils/appValidator'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'pageLogin',
@@ -62,6 +62,9 @@ export default {
       isNotEmpty
     ]
   }),
+  computed: {
+    ...mapGetters('auth', ['isAuthDataNotEmpty'])
+  },
   methods: {
     ...mapActions('auth', ['login', 'logout']),
     async onSubmit () {
@@ -69,7 +72,7 @@ export default {
     }
   },
   async created () {
-    await this.logout()
+    if (this.isAuthDataNotEmpty) await this.logout()
   }
 }
 </script>

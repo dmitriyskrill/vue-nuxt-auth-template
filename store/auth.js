@@ -60,7 +60,7 @@ export const actions = {
   },
   async logout ({ commit }) {
     try {
-      await this.$axios.$post('/auth/logout',{ withCredentials: true })
+      await this.$axios.$post('/auth/logout', { withCredentials: true })
       commit('removeAccessToken')
       commit('removeRefreshToken')
       commit('removeAuthUserId')
@@ -105,4 +105,8 @@ export const getters = {
   authUserId: state => state.authUserId || appLocalStorage.getAuthUserId(),
   isAuth: state => !!state.authUser,
   authUser: state => state.authUser,
+  isAuthDataNotEmpty: (state, getters) => !!state.authUser
+    || !!getters.refreshToken
+    || !!getters.accessToken
+    || !!getters.authUserId
 }
