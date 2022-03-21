@@ -69,7 +69,7 @@ export const actions = {
       console.error(error)
     }
   },
-  async getAuthUser ({ commit, getters, state }) {
+  async getAuthUser ({ commit, getters }) {
     try {
       const response = await this.$axios.$get(`/users/${getters.authUserId}`, { withCredentials: true })
       commit('setAuthUser', response)
