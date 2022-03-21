@@ -1,7 +1,4 @@
-import appLocalStorage from '../utils/appLocalStorage'
-import { isClient } from '~/utils/appUtils'
-
-export default function ({ $axios, redirect, store }) {
+export default function ({ $axios, store }) {
   $axios.interceptors.request.use(request => {
     const common = request.headers.common
     if (
@@ -20,11 +17,11 @@ export default function ({ $axios, redirect, store }) {
       error.response.status === 401 &&
       originalRequest
       && !originalRequest._isRetry
-      && originalRequest.url !== '/auth/updateAccessCookie'
+      && originalRequest.url !== '/auth/updateAccessToken'
     ) {
       originalRequest._isRetry = true
       try {
-        const accessToken = await store.dispatch('auth/updateAccessCookie')
+        const accessToken = await store.dispatch('auth/updateAccessToken')
         originalRequest.headers.Authorization = `Bearer ${accessToken}`
         return $axios.request(originalRequest)
       } catch (e) {

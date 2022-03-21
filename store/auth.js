@@ -78,14 +78,14 @@ export const actions = {
       console.error(error)
     }
   },
-  async updateAccessCookie ({ commit, dispatch, getters }) {
+  async updateAccessToken ({ commit, dispatch, getters }) {
     const refreshToken = getters.refreshToken
     if (!refreshToken && isClient()) {
       await dispatch('logout')
       return
     }
     if (!refreshToken && !isClient()) return
-    const response = await this.$axios.get(`/auth/updateAccessCookie`, {
+    const response = await this.$axios.get(`/auth/updateAccessToken`, {
       headers: { 'refresh': refreshToken },
       withCredentials: true
     })
