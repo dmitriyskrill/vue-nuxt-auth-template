@@ -23,7 +23,6 @@ export default {
   },
   getAccessToken  () {
     if (!isClient()) return
-    console.log('getAccessToken', localStorage.getItem('accessToken'))
     return localStorage.getItem('accessToken')
   },
   setRefreshToken (refreshToken) {
